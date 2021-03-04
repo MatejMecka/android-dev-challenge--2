@@ -31,12 +31,16 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.androiddevchallenge.ui.theme.MyTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.Dp
+import androidx.compose.material.ProgressIndicatorDefaults
 import kotlinx.coroutines.delay
-
+import androidx.compose.ui.*
+```
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,19 +57,21 @@ class MainActivity : AppCompatActivity() {
 fun MyApp() {
     //var
     var counter by remember { mutableStateOf(60) }
+    var startTime by remember { mutableStateOf(60) }
     var started by remember { mutableStateOf(false) }
+    var progress by remember { mutableStateOf(1.0f) }
 
-    val progress by animateFloatAsState(
-        targetValue = 1f,
+    val progressAnimated by animateFloatAsState(
+        targetValue = progress,
         animationSpec = tween(durationMillis = 1000, easing = LinearEasing)
-    )
+    ).value
 
     Surface(color = MaterialTheme.colors.background) {
         Column(){
         Text(text = "Ready... Set... GO!")
             Box(Modifier.fillMaxSize()) {
                 CircularProgressIndicator(
-                    progress = counter,
+                    progress = progressAnimated,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(32.dp)
@@ -80,6 +86,7 @@ fun MyApp() {
             for(i in counter downTo 0){
                 delay(1000)
                 counter = i
+                progress = (counter*1.0f) / startTime
                 println(counter)
             }
             //started = false
