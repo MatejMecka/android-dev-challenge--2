@@ -18,13 +18,11 @@ package com.example.androiddevchallenge
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -40,7 +38,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.material.ProgressIndicatorDefaults
 import kotlinx.coroutines.delay
 import androidx.compose.ui.*
-```
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Pause
+import androidx.compose.material.icons.rounded.PlayArrow
+
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,23 +62,42 @@ fun MyApp() {
     var started by remember { mutableStateOf(false) }
     var progress by remember { mutableStateOf(1.0f) }
 
-    val progressAnimated by animateFloatAsState(
+    val progressAnimated = animateFloatAsState(
         targetValue = progress,
-        animationSpec = tween(durationMillis = 1000, easing = LinearEasing)
+        ProgressIndicatorDefaults.ProgressAnimationSpec
     ).value
 
     Surface(color = MaterialTheme.colors.background) {
         Column(){
         Text(text = "Ready... Set... GO!")
-            Box(Modifier.fillMaxSize()) {
+
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
                 CircularProgressIndicator(
                     progress = progressAnimated,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(32.dp)
                 )
-                Text(text = "${counter}")
+                Text(text = "${counter}", modifier = Modifier.padding(start = 8.dp, bottom = 8.dp).animateContentSize())
             }
+            OutlinedTextField(
+                value = startTime.toString(),
+                onValueChange = {
+                    startTime = Integer.parseInt(it.replace(Regex("[^0123456789]"), ""))
+                    counter = startTime
+                },
+            )
+            FloatingActionButton(
+                modifier = Modifier
+                    .padding(top = 256.dp)
+                    .size(64.dp),
+                onClick = {
+                    started = !started
+                }
+            ) {
+                Icon(if (started) Icons.Rounded.Pause else Icons.Rounded.PlayArrow, contentDescription = if (started) "Pause" else "Continue")
+            }
+
         }
     }
 
