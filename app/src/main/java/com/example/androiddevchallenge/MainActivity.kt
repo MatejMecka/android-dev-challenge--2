@@ -19,10 +19,12 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -71,15 +73,7 @@ fun MyApp() {
         Column(){
         Text(text = "Ready... Set... GO!")
 
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
-                CircularProgressIndicator(
-                    progress = progressAnimated,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(32.dp)
-                )
-                Text(text = "${counter}", modifier = Modifier.padding(start = 8.dp, bottom = 8.dp).animateContentSize())
-            }
+
             OutlinedTextField(
                 value = startTime.toString(),
                 onValueChange = {
@@ -95,9 +89,20 @@ fun MyApp() {
                     started = !started
                 }
             ) {
-                Icon(if (started) Icons.Rounded.Pause else Icons.Rounded.PlayArrow, contentDescription = if (started) "Pause" else "Continue")
+                Icon(if (started){
+                    Icons.Rounded.Pause
+                } else {Icons.Rounded.PlayArrow},
+                    contentDescription = if (started){ "Pause"} else {"Continue"})
             }
-
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+                CircularProgressIndicator(
+                    progress = progressAnimated,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(32.dp)
+                )
+                Text(text = "${counter}", modifier = Modifier.padding(start = 8.dp, bottom = 8.dp).animateContentSize())
+            }
         }
     }
 
